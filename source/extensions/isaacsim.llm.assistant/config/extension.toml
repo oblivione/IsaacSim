@@ -1,0 +1,46 @@
+[package]
+version = "1.1.0"
+category = "AI/ML"
+title = "LLM Assistant for Isaac Sim"
+description = "Advanced natural language interface with OpenRouter, code generation, and simulation recording"
+keywords = ["isaac", "llm", "ai", "natural language", "assistant", "openrouter", "recording"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.api" = {}
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.gui.components" = {}
+"omni.kit.uiapp" = {}
+"omni.timeline" = {}
+"omni.usd" = {}
+"omni.kit.commands" = {}
+"omni.kit.stagerecorder.core" = {}
+"omni.kit.stagerecorder.ui" = {}
+"omni.replicator.core" = {}
+
+[[python.module]]
+name = "isaacsim.llm.assistant"
+
+[python.pipapi]
+requirements = [
+    "openai>=1.0.0",
+    "anthropic>=0.7.0", 
+    "requests>=2.25.0",
+    "aiohttp>=3.8.0",
+    "asyncio>=3.4.3",
+    "pillow>=8.0.0",
+    "numpy>=1.21.0"
+]
+use_online_index = true
+
+[settings]
+# LLM Configuration
+exts."isaacsim.llm.assistant".default_provider = "openai"
+exts."isaacsim.llm.assistant".max_tokens = 4096
+exts."isaacsim.llm.assistant".temperature = 0.7
+exts."isaacsim.llm.assistant".enable_recording = true
+exts."isaacsim.llm.assistant".recording_path = "/tmp/isaac_sim_recordings" 
