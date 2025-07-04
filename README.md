@@ -16,33 +16,36 @@ NVIDIA Isaac Sim™ is a simulation platform built on NVIDIA Omniverse, designed
 
 ## Key Features
 
-- [Asset Import & Export](https://docs.isaacsim.omniverse.nvidia.com/latest/importer_exporter/importers_exporters.html): Importing and exporting robots and environments from and to non-USD format.
-- [Robot Tuning](https://docs.isaacsim.omniverse.nvidia.com/latest/robot_setup/index.html): Optimize robot for physics accuracy, computation efficiency, or photorealism
-- [Robot Simulation](https://docs.isaacsim.omniverse.nvidia.com/latest/robot_simulation/index.html): Tools for moving robots, such as controllers, motion generation and kinematics solvers, and policy integration.
-- [Sensors](https://docs.isaacsim.omniverse.nvidia.com/latest/sensors/index.html): RTX and physics-based sensors
+- [Asset Import & Export](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/importer_exporter/importers_exporters.html): Importing and exporting robots and environments from and to non-USD format.
+- [Robot Tuning](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/robot_setup/index.html): Optimize robot for physics accuracy, computation efficiency, or photorealism
+- [Robot Simulation](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/robot_simulation/index.html): Tools for moving robots, such as controllers, motion generation and kinematics solvers, and policy integration.
+- [Sensors](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/sensors/index.html): RTX and physics-based sensors
 
 ## Key Applications
 
-- [Isaac Lab](https://docs.isaacsim.omniverse.nvidia.com/latest/isaac_lab_tutorials/index.html): GPU-accelerated framework built for reinforcement learning, imitation learning, and motion planning.
-- [ROS Bridge](https://docs.isaacsim.omniverse.nvidia.com/latest/ros2_tutorials/ros2_landing_page.html): Integration with Robot Operating System (ROS).
-- [Synthetic Data Generation](https://docs.isaacsim.omniverse.nvidia.com/latest/synthetic_data_generation/index.html): Collection of SDG tools
+- [Isaac Lab](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/isaac_lab_tutorials/index.html): GPU-accelerated framework built for reinforcement learning, imitation learning, and motion planning.
+- [ROS Bridge](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/ros2_tutorials/ros2_landing_page.html): Integration with Robot Operating System (ROS).
+- [Synthetic Data Generation](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/synthetic_data_generation/index.html): Collection of SDG tools
 
 ## Documentation
 
-For the latest Isaac Sim documentation, see [Isaac Sim Documentation](https://docs.isaacsim.omniverse.nvidia.com/latest/index.html). 
+For the latest Isaac Sim documentation, see [Isaac Sim Documentation](https://docs.isaacsim.omniverse.nvidia.com/latest/index.html).
 Follow these links to get started:
 
-- [Tutorials](https://docs.isaacsim.omniverse.nvidia.com/latest/introduction/quickstart_index.html)
-- [Assets](https://docs.isaacsim.omniverse.nvidia.com/latest/assets/usd_assets_overview.html)
+- [Tutorials](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/introduction/quickstart_index.html)
+- [Assets](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/assets/usd_assets_overview.html)
 
 
 ## Prerequisites and Environment Setup
 
 Ensure your system is set up with the following before building Isaac Sim:
 
-- **Operating System**: Windows 10/11 or Linux (Ubuntu 22.04 or Ubuntu 24.04)
+- **Operating System**: Windows 10/11 or Linux (Ubuntu 22.04)
 
-- **GPU**: For additional information on GPU features and requirements, see [NVIDIA GPU Requirements](https://docs.omniverse.nvidia.com/materials-and-rendering/latest/common/technical-requirements.html)
+  > **(Linux) Ubuntu 24.04**
+  > Ubuntu 24.04 is not fully supported at this time. Building with Ubuntu 24.04 requires GCC/G++ 11 to be installed, GCC/G++ 12+ is not supported.
+
+- **GPU**: For additional information on GPU features and requirements, see [NVIDIA GPU Requirements](https://docs.omniverse.nvidia.com/dev-guide/latest/common/technical-requirements.html)
 
   #### Local Workstation
 
@@ -58,7 +61,7 @@ Ensure your system is set up with the following before building Isaac Sim:
   | A40 | L40S | RTX PRO 6000 Blackwell Server |
   |  | L20 | |
 
-- **Driver**: See [NVIDIA Driver Requirements](https://docs.omniverse.nvidia.com/materials-and-rendering/latest/common/technical-requirements.html)
+- **Driver**: See [NVIDIA Driver Requirements](https://docs.omniverse.nvidia.com/dev-guide/latest/common/technical-requirements.html)
 
 - **Internet Access**: Required for downloading the Omniverse Kit SDK, extensions, and tools.
 
@@ -74,7 +77,19 @@ Ensure your system is set up with the following before building Isaac Sim:
 
 - **(Windows - C++ Only) Windows SDK**: Install this alongside MSVC. You can find it as part of the Visual Studio Installer. [Additional information on Windows development configuration](docs/readme/windows_developer_configuration.md)
 
-- **(Linux) build-essentials**: A package that includes `make` and other essential tools for building applications.  For Ubuntu, install with `sudo apt-get install build-essential`
+- **(Linux) build-essentials**: A package that includes `make` and other essential tools for building applications.  For Ubuntu, install with:
+
+  ```bash
+  sudo apt-get install build-essential
+  ```
+
+  > **(Linux) ⚠️**
+  > Please use GCC/G++ 11, higher versions are not supported yet. To install GCC/G++ 11, run the following commands:
+  > ```bash
+  > sudo apt-get install gcc-11 g++-11
+  > sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 200
+  > sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 200
+  > ```
 
 ### Recommended Software
 
@@ -90,9 +105,12 @@ This section guides you through building Isaac Sim from source code.
 
 ### 1. Clone the Repository
 
+
 ```bash
 git clone https://github.com/isaac-sim/IsaacSim.git isaacsim
 cd isaacsim
+git lfs install
+git lfs pull
 ```
 
 ### 2. Build
@@ -100,18 +118,30 @@ cd isaacsim
 Run the following command to initiate the configuration wizard:
 
 **Linux:**
+
+Confirm that GCC/G++ 11 is being used before building using the following commands:
+
+```bash
+gcc --version
+g++ --version
+```
+
 ```bash
 ./build.sh
 ```
 
 **Windows:**
+
+> **⚠️ Windows Path Length Limitation**
+> Windows has a path length limitation of 260 characters. If you encounter errors related missing files or other build errors, try moving the repository to a shorter path.
+
 ```powershell
 build.bat
 ```
 
 ### 3. Run
 
-> **⚠️ Startup Time**  
+> **⚠️ Startup Time**
 > The first time loading Isaac Sim may take up to several minutes as Extensions and Shader are loaded and cached. The subsequent startup time should be in the ranges of 10-30 seconds depending on hardware configuration.
 
 
@@ -169,7 +199,7 @@ Isaac Sim uses a custom build system with the following key options:
 
 ## Troubleshooting
 
-Please see the [FAQ](https://docs.isaacsim.omniverse.nvidia.com/latest/overview/faq_index.html), [Troubleshooting](https://docs.isaacsim.omniverse.nvidia.com/latest/overview/troubleshooting.html), and [Known Issues](https://docs.isaacsim.omniverse.nvidia.com/latest/overview/known_issues.html) for common questions, fixes, and workarounds.
+Please see the [FAQ](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/overview/faq_index.html), [Troubleshooting](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/overview/troubleshooting.html), and [Known Issues](https://docs.isaacsim.omniverse.nvidia.com/5.0.0/overview/known_issues.html) for common questions, fixes, and workarounds.
 
 
 ## Support
